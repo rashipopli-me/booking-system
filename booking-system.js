@@ -4,13 +4,13 @@ const redis = require("redis");
 const app = express();
 app.use(express.json());
 
-// Redis connection
+// 🔴 Redis connection
 const client = redis.createClient({
   socket: {
-    host: process.env.REDIS_HOST || "127.0.0.1",
-    port: process.env.REDIS_PORT || 6379
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT
   },
-  password: process.env.REDIS_PASSWORD || undefined
+  password: process.env.REDIS_PASSWORD
 });
 
 client.connect();
@@ -18,7 +18,7 @@ client.connect();
 // Total seats
 const TOTAL_SEATS = 100;
 
-// Booking API
+// ✅ Booking API (POST)
 app.post("/api/book", async (req, res) => {
   try {
     let remaining = await client.get("seats");
@@ -48,7 +48,12 @@ app.post("/api/book", async (req, res) => {
   }
 });
 
-// Dynamic port (important for deployment)
+// ✅ Root route (for browser)
+app.get("/", (req, res) => {
+  res.send("Booking system is running 🚀");
+});
+
+// ✅ Start server (important for Render)
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
